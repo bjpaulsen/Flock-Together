@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://EndScreen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://StartScreen.gd" type="Script" id=2]
+[ext_resource path="res://Oswald-Regular.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="StreamTexture" id=1]
+flags = 4
+load_path = "res://.import/sky.png-26d2f2385da36d2602e95bc19d12fcc5.stex"
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+load_path = "res://.import/sky.png-26d2f2385da36d2602e95bc19d12fcc5.stex"
+
+[sub_resource type="DynamicFont" id=3]
+size = 64
+font_data = ExtResource( 3 )
+
+[node name="Control" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="sky" parent="." index="0"]
+texture = SubResource( 1 )
+
+[node name="sky2" parent="." index="1"]
+position = Vector2( 506.723, 111.931 )
+texture = SubResource( 2 )
+
+[node name="RichTextLabel" parent="." index="2"]
+margin_left = -207.323
+margin_top = -62.757
+margin_right = 203.677
+margin_bottom = 61.243
+
+[node name="RichTextLabel3" parent="." index="3"]
+margin_left = -120.338
+margin_top = -257.671
+margin_right = 118.662
+margin_bottom = -181.671
+text = "click to begin"
+
+[node name="RichTextLabel4" parent="." index="4"]
+margin_left = -1266.98
+margin_top = 295.272
+margin_right = -1225.98
+margin_bottom = 402.271
+custom_fonts/normal_font = SubResource( 3 )
+
+[node name="RichTextLabel5" parent="." index="5"]
+margin_left = -173.0
+margin_top = 170.0
+margin_right = 174.0
+margin_bottom = 243.0
+text = "fly to the sun to end"

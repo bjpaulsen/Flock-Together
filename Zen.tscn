@@ -1,0 +1,987 @@
+[gd_scene load_steps=60 format=2]
+
+[ext_resource path="res://Zen.gd" type="Script" id=1]
+[ext_resource path="res://bird1_1.png" type="Texture" id=2]
+[ext_resource path="res://background (-2,0).png" type="Texture" id=3]
+[ext_resource path="res://Bird.gd" type="Script" id=4]
+[ext_resource path="res://CollisionShape2D.gd" type="Script" id=5]
+[ext_resource path="res://bird1_2(1).png" type="Texture" id=6]
+[ext_resource path="res://background00.png" type="Texture" id=7]
+[ext_resource path="res://bird1_3.png" type="Texture" id=8]
+[ext_resource path="res://background -1,0.png" type="Texture" id=9]
+[ext_resource path="res://background (-2,1).png" type="Texture" id=10]
+[ext_resource path="res://background (-2,-1).png" type="Texture" id=11]
+[ext_resource path="res://background (-1,1).png" type="Texture" id=12]
+[ext_resource path="res://background (1,-1).png" type="Texture" id=13]
+[ext_resource path="res://background (0,-1).png" type="Texture" id=14]
+[ext_resource path="res://background (0,1).png" type="Texture" id=15]
+[ext_resource path="res://background (-1,-1).png" type="Texture" id=16]
+[ext_resource path="res://background (1,0).png" type="Texture" id=17]
+[ext_resource path="res://background (1,1).png" type="Texture" id=18]
+[ext_resource path="res://sky.png" type="Texture" id=19]
+[ext_resource path="res://sun (1).png" type="Texture" id=20]
+[ext_resource path="res://sun (2).png" type="Texture" id=21]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 20 ), ExtResource( 21 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 275.019
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_1\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_1\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird\").position
+#
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_2\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_2\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="GDScript" id=10]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_3\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_3\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="SpriteFrames" id=11]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=12]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=13]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird3\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird3\").position
+#
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=14]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=15]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=16]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird3\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird3\").position
+	
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=17]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=18]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=19]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_4\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_4\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="SpriteFrames" id=20]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=21]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=22]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_5\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_5\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="SpriteFrames" id=23]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=24]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=25]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird5\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird5\").position
+#
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=26]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=27]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=28]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird5\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird5\").position
+	
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=29]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=30]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=31]
+script/source = "extends Area2D
+#
+#
+## Declare member variables here. Examples:
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var destination
+var following = true
+#
+#
+## Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.25, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	position = get_node(\"../AI_Bird5\").position
+
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	destination = get_node(\"../AI_Bird5\").position
+	
+#	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+"
+
+[sub_resource type="SpriteFrames" id=32]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=33]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="GDScript" id=34]
+script/source = "extends Area2D
+
+
+# Declare member variables here. Examples:
+var following = false
+var time = 0
+var rng = RandomNumberGenerator.new()
+var random_speed
+var random_offset
+var _angle = 0;
+var Radius
+var circle_center
+var angle_speed = 1.15
+var destination
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	rng.randomize()
+	random_speed = rng.randfn(1.75, .5)
+	random_offset = Vector2(rng.randfn(0, 1), rng.randfn(0, 1))
+	Radius = rng.randfn(400, 125)
+	position.x = rng.randi_range(-2400, 1400)
+	position.y = rng.randi_range(-1800, 2000)
+	circle_center = position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if (following):
+		destination = get_node(\"../Bird\").position
+	else:
+		var offset = Vector2(sin(_angle), cos(_angle)) * Radius
+#		if (time > 120):
+#			time = 0
+#			angle_speed *= -1
+		_angle += angle_speed * delta
+		destination = circle_center + offset
+		time += 1
+	
+	# go to the destination
+	look_at(destination + random_offset)
+	position += ((destination - position)/45)*random_speed + random_offset
+
+
+func _on_AI_Bird_area_entered(area):
+	if (not following):
+		if (area.is_in_group(\"player_flock\")):
+			if (get_tree().get_nodes_in_group(\"flock_6\").size() <= get_tree().get_nodes_in_group(\"player_flock\").size()):
+				following = true
+				random_speed = rng.randfn(1, .3)
+				for bird in get_tree().get_nodes_in_group(\"flock_6\"):
+					bird.add_to_group(\"player_flock\")
+"
+
+[sub_resource type="SpriteFrames" id=35]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=36]
+extents = Vector2( 65.1827, 97.7151 )
+
+[sub_resource type="SpriteFrames" id=37]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=38]
+extents = Vector2( 2354.9, 4.63519 )
+
+[node name="Zen" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="sky" type="Sprite" parent="."]
+position = Vector2( -2029.55, -2724.75 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 19 )
+
+[node name="sky2" type="Sprite" parent="."]
+position = Vector2( -1012.34, -2705.05 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 19 )
+
+[node name="sky4" type="Sprite" parent="."]
+position = Vector2( 4.86813, -2684.39 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 19 )
+
+[node name="sky3" type="Sprite" parent="."]
+position = Vector2( 1022.08, -2664.69 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 19 )
+
+[node name="background (-1,1)" type="Sprite" parent="."]
+position = Vector2( -1009.89, -1332.76 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 12 )
+
+[node name="background (1,-1)" type="Sprite" parent="."]
+position = Vector2( 1027.38, 1442.49 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 13 )
+
+[node name="background (-1,-1)" type="Sprite" parent="."]
+position = Vector2( -1008.58, 1442.63 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 16 )
+
+[node name="background (0,1)" type="Sprite" parent="."]
+position = Vector2( 10.1977, -1331.87 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 15 )
+
+[node name="background -1,0" type="Sprite" parent="."]
+position = Vector2( -1008.65, 59.6459 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 9 )
+
+[node name="Background 0,0" type="Sprite" parent="."]
+position = Vector2( 10.7924, 59.1201 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 7 )
+
+[node name="background (0,-1)" type="Sprite" parent="."]
+position = Vector2( 10.8655, 1443.26 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 14 )
+
+[node name="background (1,0)" type="Sprite" parent="."]
+position = Vector2( 1027.52, 49.6865 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 17 )
+
+[node name="background (1,1)" type="Sprite" parent="."]
+position = Vector2( 1028.13, -1342.86 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 18 )
+
+[node name="background (-2,1)" type="Sprite" parent="."]
+position = Vector2( -2028.38, -1333.07 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 10 )
+
+[node name="background (-2,0)" type="Sprite" parent="."]
+position = Vector2( -2028.57, 60.0755 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 3 )
+
+[node name="background (-2,-1)" type="Sprite" parent="."]
+position = Vector2( -2028.3, 1443.18 )
+scale = Vector2( 1.6, 1.6 )
+texture = ExtResource( 11 )
+
+[node name="Goal" type="Area2D" parent="."]
+position = Vector2( -506.681, -2774.94 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Goal"]
+frames = SubResource( 1 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Goal"]
+shape = SubResource( 2 )
+
+[node name="AI_Bird" type="Area2D" parent="." groups=[
+"flock_1",
+]]
+position = Vector2( -518.084, 17.6222 )
+script = SubResource( 3 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 4 )
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird"]
+shape = SubResource( 5 )
+
+[node name="flock_1(1)" type="Area2D" parent="." groups=[
+"flock_1",
+]]
+position = Vector2( -518.084, 17.6222 )
+script = SubResource( 6 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_1(1)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_1(1)"]
+shape = SubResource( 8 )
+
+[node name="AI_Bird2" type="Area2D" parent="." groups=[
+"flock_2",
+]]
+position = Vector2( -517.099, 17.7363 )
+script = SubResource( 9 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird2"]
+position = Vector2( 0.249023, -0.601074 )
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird2"]
+position = Vector2( 0.0583498, -0.131716 )
+shape = SubResource( 5 )
+
+[node name="AI_Bird3" type="Area2D" parent="." groups=[
+"flock_3",
+]]
+position = Vector2( -516.923, 42.2997 )
+script = SubResource( 10 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird3"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 11 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird3"]
+shape = SubResource( 12 )
+
+[node name="flock_3(1)" type="Area2D" parent="." groups=[
+"flock_3",
+]]
+position = Vector2( -516.923, 42.2997 )
+script = SubResource( 13 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_3(1)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 14 )
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_3(1)"]
+shape = SubResource( 15 )
+
+[node name="flock_3(2)" type="Area2D" parent="." groups=[
+"flock_3",
+]]
+position = Vector2( -516.923, 42.2997 )
+script = SubResource( 16 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_3(2)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 17 )
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_3(2)"]
+shape = SubResource( 18 )
+
+[node name="AI_Bird4" type="Area2D" parent="." groups=[
+"flock_4",
+]]
+position = Vector2( -516.389, 40.1622 )
+script = SubResource( 19 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird4"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 20 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird4"]
+shape = SubResource( 21 )
+
+[node name="AI_Bird5" type="Area2D" parent="." groups=[
+"flock_5",
+]]
+position = Vector2( -534.445, 36.6537 )
+script = SubResource( 22 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird5"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 23 )
+frame = 2
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird5"]
+shape = SubResource( 24 )
+
+[node name="flock_5(1)" type="Area2D" parent="." groups=[
+"flock_5",
+]]
+position = Vector2( -534.445, 36.6537 )
+script = SubResource( 25 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_5(1)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 26 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_5(1)"]
+shape = SubResource( 27 )
+
+[node name="flock_5(2)" type="Area2D" parent="." groups=[
+"flock_5",
+]]
+position = Vector2( -534.445, 36.6537 )
+script = SubResource( 28 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_5(2)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 29 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_5(2)"]
+shape = SubResource( 30 )
+
+[node name="flock_5(3)" type="Area2D" parent="." groups=[
+"flock_5",
+]]
+position = Vector2( -534.445, 36.6537 )
+script = SubResource( 31 )
+
+[node name="Sprite" type="AnimatedSprite" parent="flock_5(3)"]
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 32 )
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="flock_5(3)"]
+shape = SubResource( 33 )
+
+[node name="AI_Bird6" type="Area2D" parent="." groups=[
+"flock_6",
+]]
+position = Vector2( -509.384, 24.5811 )
+script = SubResource( 34 )
+
+[node name="Sprite" type="AnimatedSprite" parent="AI_Bird6"]
+position = Vector2( 0.249023, -0.601074 )
+scale = Vector2( 0.075, 0.075 )
+frames = SubResource( 35 )
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AI_Bird6"]
+position = Vector2( 0.0583498, -0.131716 )
+shape = SubResource( 36 )
+
+[node name="Bird" type="Area2D" parent="." groups=[
+"player_flock",
+]]
+position = Vector2( 1772.51, 1966.12 )
+scale = Vector2( 0.0361529, 27.8078 )
+script = ExtResource( 4 )
+
+[node name="bird1_1" type="AnimatedSprite" parent="Bird"]
+position = Vector2( 4.81848, -0.0035257 )
+scale = Vector2( 2.76603, 0.00359611 )
+frames = SubResource( 37 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bird"]
+shape = SubResource( 38 )
+script = ExtResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="Bird"]
+current = true
+limit_left = -2538
+limit_top = -3358
+limit_right = 1537
+limit_bottom = 2144
+smoothing_enabled = true
+[connection signal="area_entered" from="Goal" to="." method="_on_Goal_area_entered"]
+[connection signal="area_entered" from="AI_Bird" to="AI_Bird" method="_on_AI_Bird_area_entered"]
+[connection signal="area_entered" from="AI_Bird2" to="AI_Bird2" method="_on_AI_Bird_area_entered"]
+[connection signal="area_entered" from="AI_Bird3" to="AI_Bird3" method="_on_AI_Bird_area_entered"]
+[connection signal="area_entered" from="AI_Bird4" to="AI_Bird4" method="_on_AI_Bird_area_entered"]
+[connection signal="area_entered" from="AI_Bird5" to="AI_Bird5" method="_on_AI_Bird_area_entered"]
+[connection signal="area_entered" from="AI_Bird6" to="AI_Bird6" method="_on_AI_Bird_area_entered"]
